@@ -1,38 +1,47 @@
-Solution:
+Sales Order API
 
-Backend(Enterprise APIs):
-The Backend of the solution exposes the Enterprise APIs. The proposed architecture of the solution uses Spring Boot 
-to expose the REST APIs which are subsequently consumed by the UI. This makes sure that the backend remains compatible 
-with both web and mobile as front end. The following REST APIs have been exposed:
+The aim of this exercise is to implement a water ordering API so farmers can request water to irrigate their farms. Farmers can use this API to place water orders, view existing water orders and cancel water orders before they are delivered.
 
-findInventory
-AdjustInventory
-getProduct
-changeProduct
-getProductPrice
-getStoreDetails
+A basic water order has the following attributes:
+• farmId – A unique ID for identifying a farm.
+• Start date time – The date and time when water should be delivered.
+• Duration – The duration of the order (e.g. Duration of 3 hours means water will flow into the
+farm for 3 hours from the start date time).
 
-The REST Apis could further rely further on the concept of HATEOAS to propagate the representations back to the client 
-which could be used in the UI to direct navigation, however this is yet to be done and could be taken up as further 
-enhancements. 
+The solution exposes the APIs. The proposed architecture of the solution uses Spring Boot to expose the REST APIs which are subsequently consumed by the UI. This makes sure that the backend remains compatible with both web and mobile as front end. The following REST APIs have been exposed:
 
-UI(Angular2):
-The Enterprise APIs exposed by backend are consumed by Angular UI.
+createSalesOrder
+cancelSalesOrder
+findSalesOrderByFarmId
+findSalesOrderBySalesOrderId
+findSalesOrderByFarmIdAndStartDateTime
 
-Data Store(Cassandra):
-The Solution relies on Cassandra data storage to store the Catalog and Inventory Data. The Enterprise APIs use the
-Cassandra driver to look up and write the data entities into Cassandra data store. The seed scripts have been written
-in Java which could load the data in the form of CSV Files into Cassandra Database. The seed scripts use the BatchStatement
-and the Asynchronous execution of the Insert Statements in order to handle very large CSV Files.
+Assmptions:
+1. Maven is preinstalled.
+2. Chosen stack is Java/SpringBoot 2.0.8.
+3. Uses postman and Spring Test Cases for integration testing.
+4. Java is preinstalled.
 
-Schema Details:
-btp_category:         id, name, description
-btp_product:          id, name, description, category_id, color, make, size, price
-btp_store_location:   id, name, description, address, city, country, zipcode, longitude, latitude
-btp_store:            id, name, description, address, city, country, zipcode, longitude, latitude
-btp_inventory_supply: id, store_id, product_id, quantity
+Build and Execution:
+1. Change into springwiz-sales-order-api.
+2. Run mvn install.
+3. Run java -jar ./springwiz-salesorder-web/target/springwizsalesorderapp.jar
+
+Features:
+1. REST API built in Java/SpringBoot which accepts new orders from a farmer.
+2. Allows cancellelation of an existing Sales Order.
+3. Farmers can find existing Sales Orders using Farm Id, SalesOrder Id and Delivery Date.
+4. An eventing mechanism is baked into the API which publishes them to the console.
 
 Scalability:
-The Solution could be deployed on Cloud or a Clustering Solution such as Kubernetes or Docker Swarm in order to scale the 
-Enterprise APIs to handle the requisite load. The Solution also would benefit from the Eventual Consistency, Partition
+The Solution could be deployed on Cloud or a Clustering Solution such as Kubernetes in order to scale the 
+API to handle the requisite load. The Solution also would benefit from the Eventual Consistency, Partition
 Tolerance and Replication features of Cassandra Data Store.
+
+Improvements:
+1. Use Spring Batch to process the Events from an external event store. Use RabbitMQ as an external event store.
+2. Extent the publisher to use kafka as an Event store for a high availability solution.
+3. Publish the notifications to not just console but also to other destinations such as mobiles devices and email
+   addresses.
+4. Use a database to serialize the Sales Orders,use eventual consistency(couch db), if transactions are not needed
+   and high volume is anticipated.
