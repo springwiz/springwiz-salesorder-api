@@ -29,9 +29,9 @@ Build and Execution:
 
 Features:
 1. REST API built in Java/SpringBoot which accepts new orders from a farmer.
-2. Allows cancellelation of an existing Sales Order.
+2. Allows cancellation of an existing Sales Order.
 3. Farmers can find existing Sales Orders using Farm Id, SalesOrder Id and Delivery Date.
-4. An eventing mechanism is baked into the API which publishes them to the console.
+4. An eventing mechanism is baked into the API which publishes the events to the console.
 
 Scalability:
 The Solution could be deployed on Cloud or a Clustering Solution such as Kubernetes in order to scale the 
